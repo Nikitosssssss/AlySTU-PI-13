@@ -1,0 +1,696 @@
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "parall.h"
+#include "prizm.h"
+#include "cylinder.h"
+using namespace std;
+
+class Figure {
+public:
+	static int number;
+	string name;
+	double square;
+
+	Figure();
+	Figure(string Name);
+	void Display();
+	void NewName(string Name);
+	void SquareCompare(double Square1, double Square2);
+	double GetSquare();
+	void VolumeCompare(double Volume1, double Volume2);
+	static int GetNumber();
+};
+
+Figure::Figure(string Name)
+{
+	name = Name;
+	square = 0;
+	number++;
+}
+
+Figure::Figure() :Figure("A") {};
+
+void Figure::Display()
+{
+	cout << "Имя фигуры:" << name;
+	printf(" Площадь: %lf\n", square);
+}
+
+void Figure::NewName(string Name)
+{
+	name = Name;
+}
+
+double Figure::GetSquare()
+{
+	return(square);
+}
+
+void Figure::SquareCompare(double Square1, double Square2)
+{
+	if (Square1 > Square2) printf("Площадь первой фигуры больше.\n");
+	if (Square1 == Square2) printf("Площади фигур равны.\n");
+	if (Square1 < Square2) printf("Площадь второй фигуры больше.\n");
+}
+
+void Figure::VolumeCompare(double Volume1, double Volume2)
+{
+	if (Volume1 > Volume2) printf("Объем первой фигуры больше.\n");
+	if (Volume1 == Volume2) printf("Объемы фигур равны.\n");
+	if (Volume1 < Volume2) printf("Объем второй фигуры больше.\n");
+}
+
+int Figure::GetNumber()
+{
+	return(number);
+}
+
+class Circle: public Figure {
+	friend class Cylinder;
+private:
+	double rad;
+	static string type;
+public:
+	Circle();
+	Circle(string Name, double Radius);
+	Circle(string Name);
+	Circle& Set(string Name, double Radius);
+	void Read();
+	void Display();
+	double& GetRadius();
+	void NewRadius(double NewRadius);
+	static string GetType();
+	Circle& operator ++();
+	Circle operator ++(int);
+	Circle operator+(Circle c);
+};
+
+Circle::Circle(string Name, double Radius)
+{
+	NewName(Name);
+	rad = Radius;
+	square = rad * rad * 3.14;
+}
+
+Circle::Circle(string Name):Circle(Name,0)
+{
+}
+
+Circle::Circle(): Circle("O", 0)
+{
+}
+Circle &Circle::Set(string Name, double Radius)
+{
+	NewName(Name);
+	rad = Radius;
+	square = rad * rad * 3.14;
+	return *this;
+}
+
+void Circle::Read()
+{
+	string name;
+	double Radius;
+	cin >> name;
+	scanf_s("%lf", &Radius);
+	this->name = name;
+	rad = Radius;
+	square = rad * rad * 3.14;
+	
+}
+
+void Circle::Display()
+{
+	Figure::Display();
+	printf("Радиус: %lf\n",rad);
+}
+
+double& Circle::GetRadius()
+{
+	return(rad);
+}
+
+
+void Circle::NewRadius(double Newradius)
+{
+	rad = Newradius;
+	square = rad * rad * 3.14;
+}
+
+string Circle::GetType()
+{
+	return(type);
+}
+
+Circle& Circle::operator ++()
+{
+	return *this;
+}
+
+Circle Circle::operator++(int)
+{
+	Circle oldRadius(this->name,this->rad);
+	this->rad++;
+	return oldRadius;
+}
+
+Circle Circle::operator + (Circle c)
+{
+	return Circle(this->name, this->GetRadius() + c.GetRadius());
+}
+
+class Triangle: public Figure {
+private:
+	double firsteadge;
+	double secondeadge;
+	double threedeadge;
+	static string type;
+public:
+	Triangle(string, double, double, double);
+	Triangle(string);
+	Triangle();
+	void Read();
+	void Display();
+	double GetFirstEadge();
+	double GetSecondEadge();
+	double GetThreedEadge();
+	void NewEadge(double, double, double);
+	static string GetType();
+	Triangle& operator ++();
+	Triangle operator ++(int);
+	Triangle operator+(Triangle c);
+};
+
+Triangle::Triangle(string Name, double FirstEadge, double SecondEadge, double ThreedEadge)
+{
+	NewName(Name);
+	firsteadge = FirstEadge;
+	secondeadge = SecondEadge;
+	threedeadge = ThreedEadge;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+
+}
+
+Triangle::Triangle(string Name):Triangle(Name, 0, 0, 0)
+{
+}
+
+Triangle::Triangle(): Triangle("ABC", 0, 0, 0)
+{
+}
+
+void Triangle::Read()
+{
+	string Name;
+	double FirstEadge, SecondEadge, ThreedEadge;
+	cin >> Name;
+	scanf_s("%lf %lf %lf", &FirstEadge, &SecondEadge, &ThreedEadge);
+	name = Name;
+	firsteadge = FirstEadge;
+	secondeadge = SecondEadge;
+	threedeadge = ThreedEadge;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+}
+
+void Triangle::Display()
+{
+	Figure::Display();
+	printf("Стороны: %lf %lf %lf\n", firsteadge, secondeadge, threedeadge);
+}
+
+double Triangle::GetFirstEadge()
+{
+	return(firsteadge);
+}
+
+double Triangle::GetSecondEadge()
+{
+	return(secondeadge);
+}
+
+double Triangle::GetThreedEadge()
+{
+	return(threedeadge);
+}
+
+
+void Triangle::NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge)
+{
+	firsteadge = FirstEadge;
+	secondeadge = SecondEadge;
+	threedeadge = ThreedEadge;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2 ;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+}
+
+string Triangle::GetType()
+{
+	return(type);
+}
+
+Triangle& Triangle::operator ++()
+{
+	return *this;
+}
+
+Triangle Triangle::operator++(int)
+{
+	Triangle oldValue(this->name, this->firsteadge,this->secondeadge,this->threedeadge);
+	this->firsteadge++;
+	this->secondeadge++;
+	this->threedeadge++;
+	return oldValue;
+}
+
+Triangle Triangle::operator + (Triangle c)
+{
+	return Triangle(this->name, this->firsteadge+c.firsteadge, this->secondeadge+c.secondeadge, this->threedeadge+c.threedeadge);
+}
+
+class Orthogon: public Figure{
+	friend class Parall;
+private:
+	double lenght;
+	double width;
+	static string type;
+public:
+	Orthogon(string, double, double);
+	Orthogon(string);
+	Orthogon();
+	void Read();
+	void Display();
+	double GetLenght();
+	double GetWidth();
+	void NewLenghtWidth(double, double);
+	static string GetType();
+	Orthogon& operator ++();
+	Orthogon operator ++(int);
+	Orthogon operator+(Orthogon c);
+};
+
+Orthogon::Orthogon(string Name, double Lenght, double Width)
+{
+	NewName(Name);
+	lenght = Lenght;
+	width = Width;
+	square = lenght * width;
+}
+
+Orthogon::Orthogon(string Name):Orthogon(Name,0,0)
+{
+}
+
+Orthogon::Orthogon(): Orthogon("ABCD", 0, 0)
+{
+}
+
+void Orthogon::Read()
+{
+	string Name;
+	double Lenght, Width;
+	cin >> Name;
+	scanf_s("%lf %lf", &Lenght, &Width);
+	NewName(Name);
+	lenght = Lenght;
+	width = Width;
+	square = lenght * width;
+}
+
+void Orthogon::Display()
+{
+	Figure::Display();
+	printf("Длина: %lf  Ширина: %lf \n", lenght, width);
+}
+
+double Orthogon::GetLenght()
+{
+	return(lenght);
+}
+
+double Orthogon::GetWidth()
+{
+	return(width);
+}
+
+
+void Orthogon::NewLenghtWidth(double Lenght, double Width)
+{
+	lenght = Lenght;
+	width = Width;
+	square = lenght * width;
+}
+
+string Orthogon::GetType()
+{
+	return(type);
+}
+
+Orthogon& Orthogon::operator ++()
+{
+	return *this;
+}
+
+Orthogon Orthogon::operator++(int)
+{
+	Orthogon oldValue(this->name, this->lenght, this->width);
+	this->lenght++;
+	this->width++;
+	return oldValue;
+}
+
+Orthogon Orthogon::operator + (Orthogon c)
+{
+	return Orthogon(this->name, this->lenght+c.lenght, this->width+c.width);
+}
+
+class Cylinder:public Circle {
+private:
+	double height;
+	double volume;
+	double squarebok;
+	static string type;
+
+public:
+	Cylinder(string, double, double);
+	Cylinder(string);
+	Cylinder();
+	void Read();
+	void Display();
+	double* GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	static string GetType();
+	Cylinder& operator ++();
+	Cylinder operator ++(int);
+	Cylinder operator+(Cylinder c);
+};
+
+Cylinder::Cylinder(string Name, double Radius, double Height)
+{
+	height = Height;
+	NewName(Name);
+	NewRadius(Radius);
+	volume = GetSquare() * height;
+	squarebok = GetSquare() * 2 + GetRadius() * 2 * 3.14 * height;
+}
+
+Cylinder::Cylinder(string Name):Cylinder(Name,0,0)
+{
+}
+
+Cylinder::Cylinder() : Cylinder("O", 0, 0)
+{
+}
+
+void Cylinder::Read()
+{
+	double Radius, Height;
+	string Name;
+	cin >> Name;
+	scanf_s("%lf %lf", &Radius, &Height);
+	NewName(Name);
+	NewRadius(Radius);
+	height = Height;
+	volume = GetSquare() * height;
+	squarebok =square * 2 + rad * 2 * 3.14 * height;
+}
+
+void Cylinder::Display()
+{
+	Circle::Display();
+	printf("Высота: %lf Площадь боковой поверхности: %lf Объем: %lf\n", height,squarebok,volume);
+}
+
+
+double Cylinder::GetVolume()
+{
+	return(volume);
+}
+
+double Cylinder::GetHeight()
+{
+	return(height);
+}
+
+double* Cylinder::GetSquarebok()
+{
+	return(&squarebok);
+}
+
+string Cylinder::GetType()
+{
+	return(type);
+}
+
+Cylinder& Cylinder::operator ++()
+{
+	return *this;
+}
+
+Cylinder Cylinder::operator++(int)
+{
+	Cylinder oldRadius(this->name, this->rad,this->height);
+	this->rad++;
+	this->height++;
+	return oldRadius;
+}
+
+Cylinder Cylinder::operator + (Cylinder c)
+{
+	return Cylinder(this->name, this->GetRadius() + c.GetRadius(),this->height+c.height);
+}
+
+class Prizm: public Triangle {
+private:
+	double height;
+	double volume;
+	double squarebok;
+	static string type;
+public:
+	Prizm(string, double, double , double, double);
+	Prizm(string);
+	Prizm();
+	void Read();
+	void Display();
+	double GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	static string GetType();
+	Prizm& operator ++();
+	Prizm operator ++(int);
+	Prizm operator+(Prizm c);
+};
+
+Prizm::Prizm(string Name, double FirstEadge, double SecondEadge, double ThreedEadge, double Height)
+{
+	NewName(Name);
+	NewEadge(FirstEadge, SecondEadge, ThreedEadge);
+	height = Height;
+	volume = GetSquare() * height;
+	squarebok = GetSquare() * 2 + height * GetFirstEadge() + height * GetSecondEadge() + height * GetThreedEadge();
+}
+
+Prizm::Prizm(string Name): Prizm(Name, 0, 0, 0, 0)
+{
+}
+
+Prizm::Prizm(): Prizm("ABC", 0, 0, 0, 0)
+{
+}
+
+void Prizm::Read()
+{
+	string Name;
+	double FirstEadge, SecondEadge, ThreedEadge, Height;
+	cin >> Name;
+	scanf_s("%lf %lf %lf %lf", &FirstEadge, &SecondEadge, &ThreedEadge, &Height);
+	name = Name;
+	NewEadge(FirstEadge, SecondEadge, ThreedEadge);
+	height = Height;
+	volume = GetSquare() * height;
+	squarebok = GetSquare() * 2 + height * GetFirstEadge() + height * GetSecondEadge() + height * GetThreedEadge();
+}
+
+void Prizm::Display() 
+{
+	Triangle::Display();
+	printf("Высота: %lf Площадь боковой поверхности: %lf Объем: %lf\n", height, squarebok, volume);
+}
+
+double Prizm::GetSquarebok()
+{
+	return(squarebok);
+}
+
+double Prizm::GetVolume()
+{
+	return(volume);
+}
+
+ double Prizm::GetHeight()
+{
+	return(height);
+}
+
+ string Prizm::GetType()
+ {
+	 return(type);
+ }
+
+ Prizm& Prizm::operator ++()
+ {
+	 return *this;
+ }
+
+ Prizm Prizm::operator++(int)
+ {
+	 Prizm oldValue(this->name, this->GetFirstEadge(), this->GetSecondEadge(), this->GetThreedEadge(),this->height);
+	 NewEadge(GetFirstEadge()+1, GetSecondEadge()+1, GetThreedEadge()+1);
+	 height += 1;
+	 return oldValue;
+ }
+
+ Prizm Prizm::operator + (Prizm c)
+ {
+	 return Prizm(this->name, this->GetFirstEadge() + c.GetFirstEadge(), this->GetSecondEadge() + c.GetSecondEadge(), this->GetThreedEadge() + c.GetThreedEadge(),height);
+ }
+ 
+ class Parall: public Orthogon {
+private:
+	double height;
+	double volume;
+	double squarebok;
+	static string type;
+public:
+	Parall(string, double, double, double);
+	Parall(string);
+	Parall();
+	void Read();
+	void Display();
+	double GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	static string GetType();
+	Parall& operator ++();
+	Parall operator ++(int);
+	Parall operator+(Parall c);
+};
+
+Parall::Parall(string Name, double Lenght, double Width, double Height)
+{
+	NewName(Name);
+	NewLenghtWidth(Lenght, Width);
+	height = Height;
+	squarebok = (height * GetLenght() * 2) + (height * GetWidth() * 2) + (GetSquare() * 2);
+	volume = GetSquare() * height;	
+}  
+
+Parall::Parall(string Name):Parall(Name, 0, 0, 0)
+{
+}    
+
+Parall::Parall(): Parall("ABCD", 0, 0, 0)
+{
+} 
+
+void Parall::Read()
+{
+	string Name;
+	double Lenght, Width, Height;
+	scanf_s("%lf %lf %lf", &Lenght, &Width, &Height);
+	cin >> Name;
+	NewName(Name);
+	NewLenghtWidth(Lenght, Width);
+	height = Height;
+	squarebok = (height * GetLenght() * 2) + (height * GetWidth() * 2) + (GetSquare() * 2);
+	volume = GetSquare() * height;
+}
+
+void Parall::Display()
+{
+	Orthogon::Display();
+	printf("Высота параллелепипеда: %lf  Объем:  %lf Площадь боковой поверхности: %lf\n", height, volume, squarebok);
+}
+
+double Parall::GetSquarebok()
+{
+	return(squarebok);
+}
+
+double Parall::GetVolume()
+{
+	return(volume);
+}
+
+double Parall::GetHeight()
+{
+	return(height);
+}
+
+string Parall::GetType()
+{
+	return(type);
+}
+
+Parall& Parall::operator ++()
+{
+	return *this;
+}
+
+Parall  Parall::operator++(int)
+{
+	Parall oldValue(this->name, this->lenght, this->width,this->height);
+	this->lenght++;
+	this->width++;
+	return oldValue;
+}
+
+Parall  Parall::operator + (Parall c)
+{
+	return  Parall(this->name, this->lenght + c.lenght, this->width + c.width,this->height+c.height);
+}
+
+string Circle::type = "Плоский";
+string Cylinder::type = "Объемный";
+string Orthogon::type = "Плоский";
+string Triangle::type = "Плоский";
+string Parall::type = "Объемный";
+string Prizm::type = "Объемный";
+
+int Figure::number = 0;
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	int i, n;
+	Circle* c;
+	Circle c1("O",2);
+	c1.Display();
+	printf("Введите количество кругов: ");
+	scanf_s("%d", &n);
+	c = new Circle[n];
+	for (i = 0; i < n; i++)
+	{
+		c[i].Read();
+	}
+	for (i = 0; i < n; i++)
+	{
+		c[i].Display();
+	}
+	Circle c3 = c1 + c[0];
+	++c3;
+	c3++;
+	c3.Display();
+	Orthogon OPRS("OPRS", 5, 6);
+	OPRS.Display();
+	OPRS.SquareCompare(OPRS.square, c[0].square);
+	Cylinder c5("ZYX",2,3);
+	printf("%d\n", Figure::GetNumber());
+	cout << Circle::GetType();
+	cout << Cylinder::GetType();
+    delete[] c;
+	return 0;
+}
