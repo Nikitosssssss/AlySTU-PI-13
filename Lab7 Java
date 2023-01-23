@@ -1,0 +1,663 @@
+import java.util.*;
+
+abstract class Figure {
+    public String name;
+    static int number;
+    public double square;
+    public Figure(String Name)
+    {
+        name = Name;
+        square=0;
+    }
+
+    public String toString()
+    {
+        return "Имя фигуры: "+name+" Площадь: "+ square+"\n";
+    }
+
+    public void NewName(String Name)
+    {
+        name = Name;
+    }
+    public void SquareCompare(double Square1, double Square2)
+    {
+        if (Square1 > Square2) System.out.printf("Площадь первой фигуры больше.");
+        if (Square1 == Square2) System.out.printf("Площади фигур равны.");
+        if (Square1 < Square2) System.out.printf("Площадь второй фигуры больше.");
+    }
+
+    public double GetSquare()
+    {
+        return(square);
+    }
+    public default int GetNumber()
+    {
+        return(number);
+    }
+
+
+}
+package Help4;
+
+public class Ex extends Exception  // подкласс от общего класса исключений
+{
+    private int Type;       // номер варианта исключения
+
+    public Ex(int a)                   // конструктор определяемого класса
+    {
+        Type = a;
+    }
+}
+import java.util.*;
+
+import Help4.Ex;
+import Help4.Helper;
+
+
+public class Circle extends Figure
+{
+    protected double rad;
+    public Circle(String Name, double radius) {
+        super(Name);
+        if (radius < 0) this.rad = 0;
+        else this.rad = radius;
+        square = rad * rad * 3.14;
+    }
+    public Circle(String Name)
+    {
+        this(Name,0);
+    }
+    public Circle()
+    {
+       this("O",0);
+    }
+    public void Read() throws Help4.Ex
+    {
+        int f = 0;
+        String Name;
+        double Radius;
+        Scanner inp = new Scanner(System.in);
+        Name = inp.nextLine();
+        name = Name;
+       do{
+        Radius = inp.nextDouble();
+        try {
+            if (Radius <= 0) throw new Help4.Ex(1);
+            rad = Radius;
+            square = rad * rad * 3.14;
+            f = 1;
+        }
+        catch (Help4.Ex e)
+        {
+            System.out.printf("Исключение: радиус < или = 0. Введите радиус заново: ");
+        }
+        }while(f!=1);
+    }
+
+    public double GetRadius()
+    {
+        return(rad);
+    }
+
+    public void NewRadius(double Radius)
+    {
+        rad = Radius;
+        square = rad * rad * 3.14;
+    }
+    Boolean Size(double Lenght, double Width)
+    {
+        int f = 0;
+        double diam = 2 * rad;
+        double gip = Math.sqrt(Math.pow(Lenght, 2)+Math.pow(Width,2));
+        if (diam<=Lenght || diam <=Width || diam <= gip ) f = 1;
+        if (f==1) return(true);
+        else return (false);
+    }
+    public double Square()
+    {
+        return rad * rad * 3.14;
+    }
+    public void Init(String Name, double radius)
+    {
+        name = Name;
+        if (radius < 0) this.rad = 0;
+        else this.rad = radius;
+        square = rad * rad * 3.14;
+    }
+};
+import java.util.*;
+import java.lang.Math.*;
+import Help4.Helper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class Triangle extends Figure
+{
+
+    protected double firsteadge;
+    protected double secondeadge;
+    protected double threedeadge;
+
+
+    public Triangle(String name, double FirstEadge, double SecondEadge, double ThreedEadge)
+    {
+        super(name);
+        if (FirstEadge < 0) this.firsteadge = 0;
+        else this.firsteadge = FirstEadge;
+        if (SecondEadge < 0) this.secondeadge = 0;
+        else this.secondeadge = SecondEadge;
+        if (ThreedEadge < 0)this.threedeadge = 0;
+        else this.threedeadge = ThreedEadge;
+        double pp = Helper.Perimetr(firsteadge , secondeadge , threedeadge)/2;
+        double x = pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge);
+        this.square = Math.sqrt(x);
+    }
+    public Triangle(String name)
+    {
+        this(name, 0, 0, 0);
+    }
+    public Triangle()
+    {
+        this("ABC",0,0,0);
+    }
+    public void Read() throws Help4.Ex
+    {
+        int f = 0;
+        String Name;
+        double FirstEadge, SecondEadge, ThreedEadge;
+        Scanner inp = new Scanner(System.in);
+        Name = inp.nextLine();
+        name= Name;
+        do {
+            FirstEadge = inp.nextDouble();
+            SecondEadge = inp.nextDouble();
+            ThreedEadge = inp.nextDouble();
+            try
+            {if (FirstEadge < 0 || SecondEadge < 0 || ThreedEadge < 0) throw new Help4.Ex(1);
+            double pp = (firsteadge + secondeadge + threedeadge) * 0.5;
+            double x = pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge);
+            this.square = Math.sqrt(x);
+            f = 1;
+            }
+            catch (Help4.Ex e)
+            {
+                System.out.printf("Исключение: сторона < или = 0. Введите стороны заново: ");
+            }
+        }while(f!=1);
+    }
+    static void Arr2(double a[][],int r,int c)
+    {
+        int i,j;
+        for(i=0;i<r;i++)
+        {
+            for(j=0;j<c;j++)
+            {
+                a[i][j]=i+j;
+            }
+        }
+    }
+    public String toString()
+    {
+        return "Имя фигуры: "+name+" Площадь: "+ square+" Длины сторон: "+firsteadge+" "+secondeadge+" "+ threedeadge+" "+"\n";
+    }
+    public double GetFirstEage()
+    {
+        return(firsteadge);
+    }
+    public double GetSecondEadge()
+    {
+        return(secondeadge);
+    }
+    public double GetThreedEadge()
+    {
+        return(threedeadge);
+    }
+    public void NewEages(double FirstEadge, double SecondEadge, double ThreedEadge)
+    {
+        if( FirstEadge >0 && SecondEadge >0 && ThreedEadge>0)
+        {firsteadge = FirstEadge;
+            secondeadge = SecondEadge;
+            threedeadge = ThreedEadge;
+            double x;
+            double pp = (firsteadge + secondeadge + threedeadge) * 0.5;
+            x = pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge);
+            square = Math.sqrt(x);
+        }
+        else
+            System.out.printf("Ошибка, таких сторон быть не может!\n ");
+    }
+    public double Square()
+    {
+        double x;
+        double pp = (firsteadge + secondeadge + threedeadge) * 0.5;
+        x = pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge);
+        return Math.sqrt(x);
+    }
+}
+import java.util.Scanner;
+
+public class Orthogone extends Figure
+        implements Cloneable
+        {
+    protected double lenght;
+    protected double width;
+    public Orthogone(String Name, double Lenght, double Width) {
+        super(Name);
+        if (Lenght < 0) this.lenght = 0;
+        else this.lenght = Lenght;
+        if (Width < 0) this.width = 0;
+        else this.width = Width;
+        this.square = lenght * width;
+    }
+    public Orthogone(String name) {
+        this(name, 0, 0);
+    }
+    public Orthogone() {
+        this("ABCD", 0, 0);
+    }
+    public void Read() throws Help4.Ex
+    {
+        int f = 0;
+        String Name;
+        double Lenght, Width;
+        Scanner inp = new Scanner(System.in);
+        Name = inp.nextLine();
+        this.name=Name;
+        do {
+            Lenght = inp.nextDouble();
+            Width = inp.nextDouble();
+            try {
+                if (Lenght < 0 || Width < 0) throw new Help4.Ex(1);
+                this.lenght = Lenght;
+                this.width = Width;
+                this.square = lenght * width;
+                square = lenght * width;
+                f = 1;
+            }
+            catch (Help4.Ex e)
+            {
+                System.out.printf("Исключение: сторона < или = 0. Введите стороны заново: ");
+            }
+        }while(f!=1);
+    }
+    static void Arr2(double a[][],int r,int c)
+    {
+        int i,j;
+        for(i=0;i<r;i++)
+        {
+            for(j=0;j<c;j++)
+            {
+                a[i][j]=i+j;
+            }
+        }
+    }
+    public String toString()
+    {
+        return "Имя фигуры: "+name+" Площадь: "+ square+" Длина: "+lenght+" Ширина: "+width+"\n";
+    }
+
+    public double GetLenght()
+    {
+        return (lenght);
+    }
+    public double GetWidth()
+    {
+        return (width);
+    }
+    public void NewEadge(double lenght, double width) {
+        lenght = lenght;
+        width = width;
+        square = lenght * width;
+    }
+    public double Square()
+    {
+        return lenght * width;
+    }
+
+    public Object clone()  // перегрузка метода интерфейса Cloneable из суперкласса
+    {
+        try
+        {
+            return (Orthogone)super.clone();
+        }
+        catch(CloneNotSupportedException e)
+        {
+
+        }
+        return this;
+    }
+    };
+
+
+import java.util.*;
+
+import Help4.Ex;
+import Help4.Helper;
+
+
+public class Cylinder extends Circle {
+    private double height;
+    private double volume;
+    private double squarebok;
+
+    public Cylinder(String Name, double Radius, double Height)
+    {
+        super(Name,Radius);
+        if(Height<0)height=0;
+        else height = Height;
+        volume = super.GetSquare() * height;
+        squarebok = GetSquare() * 2 + rad * 2 * 3.14 * height;
+    }
+    public Cylinder(String Name)
+    {
+        this(Name,0,0);
+    }
+    public Cylinder()
+    {
+        this("O",0,0);
+    }
+    public void Read() throws Ex {
+        int f =0;
+        double Height;
+        String Name;
+        Scanner inp = new Scanner(System.in);
+        super.Read();
+        do {
+            Height = inp.nextDouble();
+            try {
+                if( Height<=0) throw new Help4.Ex(1);
+                height = Height;
+                volume = GetSquare() * height;
+                squarebok = GetSquare() * 2 + Helper.CircleLenght(rad) * height;
+                f = 1;
+            }
+            catch (Help4.Ex e)
+            {
+                System.out.printf("Исключение: высота < или = 0. Введите высоту заново: ");
+            }
+        }while(f!=1);
+    }
+    static void Arr2(double a[][],int r,int c)
+    {
+        int i,j;
+        for(i=0;i<r;i++)
+        {
+            for(j=0;j<c;j++)
+            {
+                a[i][j]=i+j;
+            }
+        }
+    }
+
+    public String toString()
+    {
+        return "Основание: \n"+"Имя фигуры: "+name+" Площадь: "+square+" Радиус: "+"\n"+rad+"Высота цилиндра: "+height+" Объем: "+volume+"\n";
+    }
+
+    public double GetSquarebok()
+    {
+        return(squarebok);
+    }
+
+    public double GetVolume()
+    {
+        return (volume);
+    }
+
+    public double GetHeight()
+    {
+        return (height);
+    }
+
+    Boolean Size(double Lenght, double Width)
+    {
+        int f = 0;
+        double diam = 2 * rad;
+        if (diam <= Lenght && diam <= Width ) f = 1;
+        if (f==1) return(true);
+        else return (false);
+    }
+    public void Init(String Name, double radius, double Height)
+    {
+        name = Name;
+        if (radius < 0) this.rad = 0;
+        else this.rad = radius;
+        square = rad * rad * 3.14;
+        if(Height<0)height=0;
+        else height = Height;
+        volume = super.GetSquare() * height;
+        squarebok = GetSquare() * 2 + rad * 2 * 3.14 * height;
+    }
+}
+import Help4.Ex;
+
+import java.util.Scanner;
+
+public class Parall implements Cloneable
+{
+    private double height;
+    private double volume;
+    private double squarebok;
+    public Orthogone O;
+    public Parall(String Name, double Lenght, double Width, double Height)
+    {
+        O.NewName(Name);
+        O.NewEadge(Lenght,Width);
+        if (Height < 0) this.height = 0;
+        else  this.height = Height;
+        this.volume = height * O.square;
+        this.squarebok = (height * O.lenght * 2) + (height * O.width * 2) + (O.square * 2);
+    }
+    public Parall(String name)
+    {
+        this(name,0,0,0);
+    }
+    public Parall()
+    {
+        this("ABCD",0,0,0);
+    }
+    public void Read() throws Ex {
+        int f =0;
+        Scanner inp = new Scanner(System.in);
+        O.Read();
+        double Height;
+        do {
+            Height = inp.nextDouble();
+            try {
+                if (Height <= 0) throw new Help4.Ex(1);
+                height = Height;
+                volume = height * O.GetSquare();
+                squarebok = (height * O.lenght * 2) + (height * O.width * 2) + (O.square * 2);
+                f = 1;
+            }
+            catch (Help4.Ex e)
+            {
+                System.out.printf("Исключение: высота < или = 0. Введите высоту заново: ");
+            }
+        }while(f!=1);
+    }
+    static void Arr2(double a[][],int r,int c)
+    {
+        int i,j;
+        for(i=0;i<r;i++)
+        {
+            for(j=0;j<c;j++)
+            {
+                a[i][j]=i+j;
+            }
+        }
+    }
+    public String toString()
+    {
+        return " Имя фигуры: "+O.name+" Площадь: "+ O.square+" Длина: "+O.lenght+" Ширина: "+O.width+" Высота параллелепипеда: "+height+" Объем: "+volume +"\n";
+    }
+
+    public double GetSquarebok()
+    {
+        return(squarebok);
+    }
+    public double GetVolume()
+    {
+        return(volume);
+    }
+    public double GetHeight()
+    {
+        return(height);
+    }
+
+    public Object clone() // перегрузка клонирования
+    {
+        try
+        {
+            Parall clone=(Parall)super.clone();
+            clone.O=(Orthogone)O.clone();  // клонирование поля rd (Record) !
+            return clone;
+        }
+        catch(CloneNotSupportedException e)
+        {
+
+        }
+        return this;
+    }
+
+}
+import Help4.Ex;
+
+import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class Prizm extends Triangle{
+    private double height;
+    private double volume;
+    private double squarebok;
+    public Prizm(String Name, double FirstEadge, double SecondEadge, double ThreedEadge, double Height)
+    {
+        super(Name,FirstEadge,SecondEadge,ThreedEadge);
+        if (Height < 0) this.height = 0;
+        else this.height = Height;
+        this.volume = GetSquare() * height;
+        this.squarebok = GetSquare() * 2 + height * firsteadge + height * GetSecondEadge() + height * GetThreedEadge();
+    }
+    public Prizm(String name)
+    {
+        this(name,0,0,0,0);
+    }
+    public Prizm()
+    {
+        this("ABC",0,0,0,0);
+    }
+    public void Read() throws Ex {
+        int f = 0;
+        Scanner inp = new Scanner(System.in);
+        super.Read();
+        double Height;
+        do {
+            Height = inp.nextDouble();
+            try{
+            if (Height <= 0) throw new Help4.Ex(1);
+            else height = Height;
+            volume = GetSquare() * height;
+            squarebok = GetSquare() * 2 + height * GetFirstEage() + height * GetSecondEadge() + height * GetThreedEadge();
+            }
+            catch (Help4.Ex e)
+            {
+                System.out.printf("Исключение: высота < или = 0. Введите высоту заново: ");
+            }
+        }while(f!=1);
+    }
+    static void Arr2(double a[][],int r,int c)
+    {
+        int i,j;
+        for(i=0;i<r;i++)
+        {
+            for(j=0;j<c;j++)
+            {
+                a[i][j]=i+j;
+            }
+        }
+    }
+    public String toString()
+    {
+        return "Имя фигуры: "+name+" Площадь: "+ square+" Длины сторон: "+firsteadge+" "+secondeadge+" "+ threedeadge+" "+" Высота призмы: "+height+ " Объем: "+volume+"\n";
+    }
+    public double GetSquareBok()
+    {
+        return(squarebok);
+    }
+    public double GetVolume()
+    {
+        return(volume);
+    }
+    public double GetHeight()
+    {
+        return(height);
+    }
+
+    class MyComparator implements Comparator
+    {
+
+    }
+    public int compare(Prizm O)
+    {
+        double S1,S2;
+        S1 = this.square;
+        S2 = O.square;
+        int k = this.square.compareTo(O.square);
+        if(S1>S2)
+            return 1;
+        else return -1;
+    }
+}
+import Help4.Ex;
+
+import java.io.*;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
+
+
+
+public class Main
+{
+    public static void main(String args[]) throws UnsupportedEncodingException {
+        ArrayList b = new ArrayList();
+        Circle c = new Circle();
+        Cylinder d = new Cylinder();
+        c.Init("A1",1);
+        d.Init("B1",1,1);
+        b.add(c);
+        b.add(d);
+        c.Init("A2",2);
+        d.Init("B2",2,2);
+        b.add(c);
+        b.add(d); c.Init("A3",3);
+        d.Init("B3",3,3);
+        b.add(c);
+        b.add(d);
+        int k=0;
+        String gc;
+        Iterator ik = b.iterator();
+        while(ik.hasNext())
+        {
+            Object e1 =ik.next();
+            gc=e1.getClass().getSimpleName();
+            if(gc.equals("Circle"))
+                k++;
+        }
+        System.out.println(k);
+        ArrayList a = new ArrayList<Prizm>();
+        a.add(new Prizm("C1",1,1,1,1));
+        a.add(new Orthogone("C2",2,2));
+        a.add(new Orthogone("C3",3,3));
+        Collections.sort(a);
+        while(ik.hasNext())
+        {
+            System.out.println(ik);
+        }
+    }
+}
