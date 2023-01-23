@@ -1,0 +1,877 @@
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+using namespace std;
+
+ class Figure {
+ protected:
+	string name;
+	double square;
+public:
+	Figure(string Name);
+	Figure();
+	virtual double Square() = 0;
+	void NewName(string Name);
+	string GetName();
+};
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "figure.h"
+
+Figure::Figure(string Name)
+{
+	name = Name;
+	square = 0;
+}
+
+Figure::Figure() :Figure("A")
+{
+}
+
+void Figure::NewName(string Name)
+{
+	name = Name;
+}
+
+string Figure::GetName()
+{
+	return(name);
+}
+
+
+#pragma once
+#include "figure.h"
+
+using namespace std;
+
+
+class Circle: public Figure {
+public:
+	Circle();
+	Circle(string Name, double Radius);
+	Circle(string Name);
+	void Read();
+	double& GetRadius();
+	void NewRadius(double NewRadius);
+	double Square();
+	friend void operator << (ostream& o, Circle c);
+	virtual bool Size(double Lenght, double Width);
+	virtual void Display();
+protected:
+	double rad;
+};
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "circle.h"
+#include "figure.h"
+#include "math.h"
+
+Circle::Circle(string Name, double Radius)
+{
+	rad = Radius;
+	NewName(Name);
+	square = rad * rad * 3.14;
+}
+
+Circle::Circle(string Name):Circle(Name,0)
+{
+}
+
+Circle::Circle(): Circle("O", 0)
+{
+}
+
+void Circle::Read()
+{
+	int f=0;
+	string name;
+	double Radius;
+	cin >> name;
+	do {
+		scanf_s("%lf", &Radius);
+		try
+		{
+			if (Radius <= 0) throw 0;
+			this->name = name;
+			rad = Radius;
+			square = rad * rad * 3.14;
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно создать фигуру! Введите радиус заново: ");
+		}
+	} while (f != 1);
+}
+
+double& Circle::GetRadius()
+{
+	return(rad);
+}
+
+void Circle::NewRadius(double Newradius)
+{
+	rad = Newradius;
+	square = rad * rad * 3.14;
+}
+
+void operator << (ostream& o, Circle c)
+{
+	o << "Имя фигуры:" << c.name;
+	o << " Площадь:  " << c.square<<"\n";
+	o << "Радиус:  " << c.rad << "\n";
+}
+
+bool Circle::Size(double Lenght, double Width)
+{
+	int f = 0;
+	double diam = 2 * rad;
+	double gip = sqrt(pow(Lenght, 2)+pow(Width,2));
+	if (diam<=Lenght || diam <=Width || diam <= gip ) f = 1;
+	if (f) return(true);
+	else return (false);
+}
+
+double Circle::Square()
+{
+	square = rad * rad * 3.14;
+	return(square);
+}
+
+void Circle::Display()
+{
+	cout << "Имя фигуры: "<< name << "\n";
+	printf("Площадь: %.2lf ", square);
+	printf("Радиус: %.2lf \n", rad);
+}
+
+
+
+#pragma once
+#include "figure.h"
+using namespace std;
+
+class Triangle: public Figure {
+public:
+	Triangle(string Name, double FirstEadge, double SecondEadge, double ThreedEadge);
+	Triangle(string Name);
+	Triangle();
+	void Read();
+	double GetFirstEadge();
+	double GetSecondEadge();
+	double GetThreedEadge();
+	void NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge);
+	friend void operator << (ostream& o, Triangle t);
+	double Square();
+	virtual void Display();
+protected:
+	double firsteadge;
+	double secondeadge;
+	double threedeadge;
+};
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "figure.h"
+#include "triangle.h"
+using namespace std;
+
+Triangle::Triangle(string Name, double FirstEadge, double SecondEadge, double ThreedEadge)
+{
+	this->name = Name;
+	firsteadge = FirstEadge;
+	secondeadge = SecondEadge;
+	threedeadge = ThreedEadge;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+
+}
+
+Triangle::Triangle(string Name):Triangle(Name, 0, 0, 0)
+{
+}
+
+Triangle::Triangle(): Triangle("ABC", 0, 0, 0)
+{
+}
+
+void Triangle::Read()
+{
+	int f = 0;
+	string Name;
+	double FirstEadge, SecondEadge, ThreedEadge;
+	cin >> Name;
+	name = Name;
+	do {
+		scanf_s("%lf %lf %lf", &FirstEadge, &SecondEadge, &ThreedEadge);
+		try {
+			if (FirstEadge <= 0 || SecondEadge <= 0 || ThreedEadge <= 0) throw 0;
+			firsteadge = FirstEadge;
+			secondeadge = SecondEadge;
+			threedeadge = ThreedEadge;
+			double pp = (firsteadge + secondeadge + threedeadge) / 2;
+			square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно создать фигуру! Введите стороны заново: ");
+		}
+	} while (f != 1);
+}
+
+double Triangle::GetFirstEadge()
+{
+	return(firsteadge);
+}
+
+double Triangle::GetSecondEadge()
+{
+	return(secondeadge);
+}
+
+double Triangle::GetThreedEadge()
+{
+	return(threedeadge);
+}
+
+
+void Triangle::NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge)
+{
+	firsteadge = FirstEadge;
+	secondeadge = SecondEadge;
+	threedeadge = ThreedEadge;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2 ;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+}
+
+
+void operator << (ostream& o, Triangle t)
+{
+	o << "Имя фигуры:" << t.name;
+	o << " Площадь:  " << t.square << "\n";
+	o << "Стороны: " << t.firsteadge << " " << t.secondeadge << " " << t.threedeadge << "\n";
+}
+
+double Triangle::Square()
+{
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	return(sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge)));
+}
+
+void Triangle::Display()
+{
+	cout << "Имя фигуры: " << name << "\n";
+	printf("Площадь: %.2lf Стороны: %.2lf %.2lf %.2lf\n",square, firsteadge, secondeadge, threedeadge);
+}
+
+#pragma once
+#include "figure.h"
+
+class Orthogon: public Figure{
+	friend class Parall;
+protected:
+	double lenght;
+	double width;
+public:
+	Orthogon(string Name, double Lenght, double Width);
+	Orthogon(string Name);
+	Orthogon();
+	void Read();
+	void Change(double Lenght, double Width);
+	double GetLenght();
+	double GetWidth();
+	void NewLenghtWidth(double Lenght, double Width);
+	double Square();
+	friend void operator << (ostream& o, Orthogon c);
+	virtual void Display();
+};
+
+#pragma once
+#include "circle.h"
+using namespace std;
+
+class Cylinder:public Circle {
+protected:
+	double height;
+	double volume;
+	double squarebok;
+public:
+	Cylinder(string Name, double Radius, double Height);
+	Cylinder(string);
+	Cylinder();
+	void Read();
+	double* GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	Cylinder& operator ++();
+	Cylinder operator ++(int);
+	Cylinder operator+(Cylinder c);
+	Cylinder operator =(Circle a);
+	friend void operator << (ostream& o, Cylinder c);
+	friend Cylinder operator >> (istream& o, Cylinder& c);
+	bool Size(double Lenght, double Width);
+	void NewHeight(double Height);
+	void Display();
+};
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "figure.h"
+#include "circle.h"
+#include "figure.h"
+#include "cylinder.h"
+using namespace std;
+
+Cylinder::Cylinder(string Name, double Radius, double Height):Circle(Name,Radius)
+{
+	height = Height;
+	volume = square * height;
+	squarebok = square * 2 + rad * 2 * 3.14 * height;
+}
+
+Cylinder::Cylinder(string Name):Cylinder(Name,0,0)
+{
+}
+
+Cylinder::Cylinder() : Cylinder("O", 0, 0)
+{
+}
+
+void Cylinder::Read()
+{
+	int f = 0;
+	double Radius, Height;
+	string Name;
+	cin >> Name;
+	NewName(Name);
+	do {
+		scanf_s("%lf %lf", &Radius, &Height);
+		try {
+			if (Radius <= 0||Height <= 0)throw 0;
+			NewRadius(Radius);
+			height = Height;
+			volume = Square() * height;
+			squarebok = square * 2 + rad * 2 * 3.14 * height;
+			f = 1;
+		}
+		catch (...)
+		{
+		    printf("Невозможно создать фигуру! Введите радиус и высоту заново: ");
+		}
+	} while (f != 1);
+}
+
+double Cylinder::GetVolume()
+{
+	return(volume);
+}
+
+double Cylinder::GetHeight()
+{
+	return(height);
+}
+
+double* Cylinder::GetSquarebok()
+{
+	return(&squarebok);
+}
+
+Cylinder& Cylinder::operator ++()
+{
+	return *this;
+}
+
+Cylinder Cylinder::operator++(int)
+{
+	Cylinder oldRadius(this->name, this->rad,this->height);
+	this->rad++;
+	this->height++;
+	return oldRadius;
+}
+
+Cylinder Cylinder::operator + (Cylinder c)
+{
+	return Cylinder(this->name, this->GetRadius() + c.GetRadius(),this->height+c.height);
+}
+
+Cylinder Cylinder::operator =(Circle a)
+{
+	this->name = a.GetName();
+	this->rad = a.GetRadius();
+	this->square = a.Square();
+	this->height = 1;
+	this->volume = a.Square() * height;
+	this->squarebok = square * 2 + rad * 2 * 3.14 * height;
+	return *this;
+}
+
+void operator << (ostream& o, Cylinder c)
+{
+	cout << "Имя фигуры:" << c.name;
+	cout << " Площадь:  " << c.square << "\n";
+	cout << "Радиус:  " << c.rad << "\n";
+	cout << "Высота: " << c.height << " Площадь боковой поверхности : " << c.squarebok << " Объем: " << c.volume << "\n";
+}
+
+Cylinder operator >> (istream& o, Cylinder& C)
+{
+	int f = 0;
+	double Radius, Height;
+	string Name;
+	cin >> Name;
+	C.name = Name;
+	do {
+		cin >> Radius;
+		cin >> Height;
+		try {
+			if (Radius <= 0 || Height <= 0)throw 0;
+			C.rad = Radius;
+			C.height = Height;
+			C.volume = C.Square() * C.height;
+			C.squarebok = C.square * 2 + C.rad * 2 * 3.14 * C.height;
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно создать фигуру! Введите радиус и высоту заново: ");
+		}
+	} while (f != 1);
+	return C;
+}
+
+
+bool Cylinder::Size(double Lenght, double Width)
+{
+	int f = 0;
+	double diam = 2 * rad;
+	if (diam <= Lenght && diam <= Width ) f = 1;
+	if (f) return(true);
+	else return (false);
+}
+
+void Cylinder::NewHeight(double Height)
+{
+	this->height=Height;
+}
+
+void Cylinder::Display()
+{
+	cout << "Имя фигуры: " << name << "\n";
+	printf("Площадь: %.2lf Радиус: %.2lf\nВысота: %.2lf Площадь боковой поверхности: %.2lf\n", square,rad,height,squarebok);
+}
+#pragma once
+#include "triangle.h" 
+using namespace std;
+
+class Prizm: public Triangle {
+private:
+	double height;
+	double volume;
+	double squarebok;
+public:
+	Prizm(string, double, double , double, double);
+	Prizm(string);
+	Prizm();
+	void Read();
+	void NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge);
+	void NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge, double Height);
+	double GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	Prizm& operator ++();
+	Prizm operator ++(int);
+	Prizm operator+(Prizm c);
+	Prizm operator =(Triangle a);
+	void Display();
+	friend void operator << (ostream& o, Prizm p);
+};
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "figure.h"
+#include "triangle.h" 
+#include "prizm.h"
+using namespace std;
+
+void Prizm::NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge)
+{
+	this->firsteadge = FirstEadge;
+	this->secondeadge = SecondEadge;
+	this->threedeadge = ThreedEadge;
+	this->height = 1;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+	squarebok = square * 2 + height * firsteadge + height * secondeadge + height * threedeadge;
+	volume = Square() * height;
+}
+
+void Prizm::NewEadge(double FirstEadge, double SecondEadge, double ThreedEadge , double Height)
+{
+	this->firsteadge = FirstEadge;
+	this->secondeadge = SecondEadge;
+	this->threedeadge = ThreedEadge;
+	this->height = Height;
+	double pp = (firsteadge + secondeadge + threedeadge) / 2;
+	square = sqrt(pp * (pp - firsteadge) * (pp - secondeadge) * (pp - threedeadge));
+	squarebok = square * 2 + height * firsteadge + height * secondeadge + height * threedeadge;
+	volume = Square() * height;
+}
+
+Prizm::Prizm(string Name, double FirstEadge, double SecondEadge, double ThreedEadge, double Height):Triangle(Name,FirstEadge,SecondEadge,ThreedEadge)
+{
+	height = Height;
+	volume = Square() * height;
+	squarebok = square * 2 + height *firsteadge + height * secondeadge + height * threedeadge;
+}
+
+Prizm::Prizm(string Name): Prizm(Name, 0, 0, 0, 0)
+{
+}
+
+Prizm::Prizm(): Prizm("ABC", 0, 0, 0, 0)
+{
+}
+
+void Prizm::Read()
+{
+	int f = 0;
+	string Name;
+	double FirstEadge, SecondEadge, ThreedEadge, Height;
+	cin >> Name;
+	name = Name;
+	do {
+		scanf_s("%lf %lf %lf %lf", &FirstEadge, &SecondEadge, &ThreedEadge, &Height);
+		try {
+			if (FirstEadge<0 || SecondEadge <=0 || ThreedEadge<= 0) throw 0;
+			NewEadge(FirstEadge, SecondEadge, ThreedEadge);
+			height = Height;
+			volume = Square() * height;
+			squarebok = square * 2 + height * firsteadge + height * secondeadge + height * threedeadge;
+			f = 1;
+		}
+		catch (int k)
+		{
+			printf("Невозможно создать фигуру! Введите стороны и высоту заново: ");
+		}
+	} while (f != 1);
+}
+
+double Prizm::GetSquarebok()
+{
+	return(squarebok);
+}
+
+double Prizm::GetVolume()
+{
+	return(volume);
+}
+
+ double Prizm::GetHeight()
+{
+	return(height);
+}
+
+ Prizm& Prizm::operator ++()
+ {
+	 return *this;
+ }
+
+ Prizm Prizm::operator++(int)
+ {
+	 Prizm oldValue(this->name, this->GetFirstEadge(), this->GetSecondEadge(), this->GetThreedEadge(),this->height);
+	 NewEadge(GetFirstEadge()+1, GetSecondEadge()+1, GetThreedEadge()+1);
+	 height += 1;
+	 return oldValue;
+ }
+
+ Prizm Prizm::operator + (Prizm c)
+ {
+	 return Prizm(this->name, this->GetFirstEadge() + c.GetFirstEadge(), this->GetSecondEadge() + c.GetSecondEadge(), this->GetThreedEadge() + c.GetThreedEadge(),height);
+ }
+
+ Prizm Prizm::operator =(Triangle a)
+ {
+	 this->name = a.GetName();
+	 this->firsteadge = a.GetFirstEadge();
+	 this->secondeadge = a.GetSecondEadge();
+	 this->threedeadge = a.GetThreedEadge();
+	 this->height = 1;
+	 this->square = a.Square();
+	 this->volume = Square() * height;
+	 this->squarebok = square * 2 + height * firsteadge + height * secondeadge + height * threedeadge;
+	 return *this;
+ }
+
+ void operator << (ostream& o, Prizm p)
+ {
+	 cout << "Имя фигуры:" << p.name;
+	 cout << " Площадь:  " << p.square << "\n";
+	 cout << "Стороны: " << p.firsteadge << " " << p.secondeadge << " " << p.threedeadge << "\n";
+	 cout << "Высота: " << p.height << "Площадь боковой поверхности: " << p.squarebok << "Объем: " << p.volume << "\n";
+ }
+
+ void Prizm::Display()
+ {
+	 cout << "Имя фигуры: " << name << "\n";
+	 printf("Площадь: %.2lf Стороны: %.2lf %.2lf %.2lf\nВысота: %.2lf Площадь боковой поверхности: %.2lf\n", square, firsteadge, secondeadge, threedeadge,height,squarebok);
+ }
+ 
+ #pragma once
+#include "orthogon.h"
+using namespace std;
+
+class Parall: public Orthogon {
+private:
+	double height;
+	double volume;
+	double squarebok;
+public:
+	Parall(string Name, double Lenght, double Width, double Height);
+	Parall(string);
+	Parall();
+	void Change(double Lenght, double Width);
+	void Change(double Lenght, double Width, double Height);
+	void Read();
+	double GetSquarebok();
+	double GetVolume();
+	double GetHeight();
+	Parall& operator ++();
+	Parall operator ++(int);
+	Parall operator+(Parall c);
+	Parall operator =(Orthogon a);
+	friend void operator << (ostream& o, Parall p);
+	void Display();
+};
+
+#pragma once
+#include <iostream>
+#include <conio.h>
+#include <string.h>
+#include "figure.h"
+#include "orthogon.h"
+#include "parall.h"
+using namespace std;
+
+
+void Parall::Change(double Lenght, double Width)
+{
+	int f = 0;
+	do {
+		try {
+			if (Lenght <= 0 || Width <= 0) throw 0;
+			this->lenght = Lenght;
+			this->width = Width;
+			square = lenght * width;
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно изменить параметры! Введите стороны заново: ");
+		}
+	} while (f != 1);
+	height = 1;
+	square = lenght * width;
+	squarebok = (height * lenght * 2) + (height * width * 2) + (square * 2);
+	volume = square * height;
+}
+
+void Parall::Change(double Lenght, double Width, double Height)
+{
+	int f = 0;
+	do {
+		try {
+			if (Lenght <= 0 || Width <= 0 || Height <= 0) throw 0;
+			this->lenght = Lenght;
+			this->width = Width;
+			this->height = Height;
+			square = lenght * width;
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно изменить параметры! Введите стороны заново: ");
+		}
+	} while (f != 1);
+	square = lenght * width;
+}
+
+Parall::Parall(string Name, double Lenght, double Width, double Height):Orthogon(Name, Lenght, Width)
+{
+	height = Height;
+	squarebok = (height * lenght * 2) + (height * width * 2) + (square * 2);
+	volume = square * height;
+}  
+
+Parall::Parall(string Name):Parall(Name, 0, 0, 0)
+{
+}    
+
+Parall::Parall(): Parall("ABCD", 0, 0, 0)
+{
+} 
+
+void Parall::Read()
+{
+	int f = 0;
+	string Name;
+	double Lenght, Width, Height;
+	cin >> Name;
+	NewName(Name);
+	do {
+		scanf_s("%lf %lf %lf", &Lenght, &Width, &Height);
+		try {
+			if (Lenght <= 0 || Width <= 0 || Height <= 0) throw 0;
+			NewLenghtWidth(Lenght, Width);
+			height = Height;
+			squarebok = (height * lenght * 2) + (height * width * 2) + (square * 2);
+			volume = Square() * height;
+			f = 1;
+		}
+		catch (...)
+		{
+			printf("Невозможно создать фигуру! Введите стороны заново: ");
+		}
+	} while (f != 1);
+}
+
+double Parall::GetSquarebok()
+{
+	return(squarebok);
+}
+
+double Parall::GetVolume()
+{
+	return(volume);
+}
+
+double Parall::GetHeight()
+{
+	return(height);
+}
+
+Parall& Parall::operator ++()
+{
+	return *this;
+}
+
+Parall  Parall::operator++(int)
+{
+	Parall oldValue(this->name, this->lenght, this->width,this->height);
+	this->lenght++;
+	this->width++;
+	return oldValue;
+}
+
+Parall  Parall::operator + (Parall c)
+{
+	return  Parall(this->name, this->lenght + c.lenght, this->width + c.width,this->height+c.height);
+}
+
+Parall  Parall::operator =(Orthogon a)
+{
+	this->name = a.GetName();
+	this->lenght = a.GetLenght();
+	this->width = a.GetWidth();
+	this->square = a.Square();
+	this->height = 1;
+	this->squarebok = (height * lenght * 2) + (height * width * 2) + (square * 2);
+	this->volume = Square() * height;
+	return *this;
+}
+
+void operator << (ostream& o, Parall p)
+{
+	cout << "Имя фигуры:" << p.name;
+	cout << " Площадь:  " << p.square << "\n";
+	cout << "Длина: " << p.lenght << "Ширина: " << p.width << "\n";
+	cout <<"Высота параллелепипеда: "<< p.height << " Объем:  "<< p.volume <<" Площадь боковой поверхности: " << p.squarebok << "\n";
+}
+
+void Parall::Display()
+{
+	cout << "Имя фигуры:" << name << "\n";
+	printf("Площадь: %.2lf Длина: %.2lf Ширина: %.2lf \n", square, lenght, width);
+	printf("Высота: %.2lf Площадь боковой поверхности: %.2lf\n", height,squarebok);
+}
+
+
+
+#include <iostream>
+#include <conio.h>
+#include <vector>
+#include <algorithm>
+#include <string.h>
+#include "parall.h"
+#include "prizm.h"
+#include "cylinder.h"
+#include "Figures.h"
+#include "Figures.cpp"
+#include "windows.h"
+using namespace std;
+
+bool search(Circle* C1,double n,double m)
+{
+	return(C1->GetRadius() >= n && C1->GetRadius() <= m);
+}
+
+bool con(Circle* C1, Circle* C2)
+{
+	if (C1->GetRadius() < C2->GetRadius()) return true;
+	else return false;
+}
+
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	vector<Circle>::iterator it;
+	vector<Circle> C1;
+	it = C1.begin();
+	C1.clear();             // очистка контейнера память до конца не освобождается
+	vector<Circle> tmp = C1;
+	C1.swap(tmp);
+	vector<Circle*> c;
+	Circle *C;
+	Cylinder *D;
+	C = new Circle;
+	D = new Cylinder;
+	C = new Circle("A1", 1);
+	c.push_back(C);
+	D = new Cylinder("B1",1,1);
+	c.push_back(D);
+	C = new Circle("A2", 3);
+	c.push_back(C);
+	D = new Cylinder("B2", 3, 3);
+	c.push_back(D);
+	C = new Circle("A3", 2);
+	c.push_back(C);
+	D = new Cylinder("B3", 2, 2);
+	c.push_back(D);
+	double n, m;
+	n = 1;
+	m = 10;
+	vector<Circle*>::iterator ir;
+	int NCylinders = 0;
+	sort(c.begin(), c.end(), con);
+	for (ir = c.begin(); ir != c.end(); ++ir)
+	{
+		if (dynamic_cast<Cylinder*>(*ir))  
+			NCylinders++;
+	}
+	printf("Количество цилиндров: %d\n", NCylinders);
+	for (ir = c.begin(); ir != c.end(); ++ir)
+	{
+		if(search(*ir,n,m))
+		(*ir)->Display();
+	}
+	return 0;
+}
